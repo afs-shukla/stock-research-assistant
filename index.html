@@ -2,255 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Equity Research Assistant</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <style>
-    :root {
-      --primary: #0f172a;
-      --accent: #2563eb;
-      --bg: #f8fafc;
-      --card: #ffffff;
-      --text: #1e293b;
-      --muted: #64748b;
-      --border: #e5e7eb;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
-    }
-
-    header {
-      background: var(--primary);
-      color: white;
-      padding: 18px 32px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    header h1 {
-      font-size: 18px;
-      margin: 0;
-      font-weight: 600;
-    }
-
-    header span {
-      font-size: 13px;
-      opacity: 0.85;
-    }
-
-    main {
-      max-width: 900px;
-      margin: 60px auto;
-      padding: 0 20px;
-    }
-
-    .card {
-      background: var(--card);
-      border-radius: 12px;
-      padding: 32px;
-      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
-      margin-bottom: 40px;
-    }
-
-    h2 {
-      margin-top: 0;
-      font-size: 22px;
-      font-weight: 600;
-    }
-
-    .description {
-      color: var(--muted);
-      margin-bottom: 28px;
-      font-size: 15px;
-    }
-
-    label {
-      font-size: 13px;
-      font-weight: 600;
-      display: block;
-      margin-bottom: 6px;
-    }
-
-    input, select {
-      width: 100%;
-      padding: 12px 14px;
-      font-size: 15px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      margin-bottom: 20px;
-    }
-
-    input:focus, select:focus {
-      outline: none;
-      border-color: var(--accent);
-    }
-
-    button {
-      width: 100%;
-      background: var(--accent);
-      color: white;
-      padding: 14px;
-      font-size: 16px;
-      border-radius: 10px;
-      border: none;
-      cursor: pointer;
-      font-weight: 600;
-    }
-
-    button:hover {
-      background: #1e40af;
-    }
-
-    .status {
-      margin-top: 18px;
-      font-size: 14px;
-      text-align: center;
-      color: var(--muted);
-    }
-
-    .report-container {
-      display: none;
-    }
-
-    .report-container h3 {
-      margin-top: 0;
-      font-size: 20px;
-      margin-bottom: 12px;
-    }
-
-    .report-content {
-      white-space: pre-wrap;
-      background: #f9fafb;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 24px;
-      font-size: 14px;
-      max-height: 700px;
-      overflow-y: auto;
-    }
-
-    footer {
-      margin-top: 80px;
-      padding: 24px;
-      text-align: center;
-      font-size: 13px;
-      color: var(--muted);
-    }
-
-    footer span {
-      display: block;
-      margin-top: 6px;
-      font-size: 12px;
-    }
-
-    @media (max-width: 600px) {
-      main {
-        margin-top: 40px;
-      }
-      .card {
-        padding: 24px;
-      }
-    }
-  </style>
-</head>
-
-<body>
-
-<header>
-  <h1>Equity Research Assistant</h1>
-  <span>Long-term Investment Analysis</span>
-</header>
-
-<main>
-
-  <!-- INPUT CARD -->
-  <div class="card">
-    <h2>Analyze a Stock</h2>
-    <p class="description">
-      Generate a comprehensive equity research report including business quality,
-      valuation scenarios, and reverse DCF analysis.
-    </p>
-
-    <label for="ticker">Stock / Company Ticker</label>
-    <input id="ticker" placeholder="INFY, TCS, AAPL">
-
-    <label for="market">Market</label>
-    <select id="market">
-      <option value="INDIA">India</option>
-      <option value="US">United States</option>
-    </select>
-
-    <button onclick="analyze()">Generate Research Report</button>
-
-    <div class="status" id="status"></div>
-  </div>
-
-  <!-- REPORT CARD -->
-  <div class="card report-container" id="reportSection">
-    <h3>Research Report</h3>
-    <div class="report-content" id="reportContent"></div>
-  </div>
-
-</main>
-
-<footer>
-  Built for long-term investors
-  <span>Not investment advice • For educational use</span>
-</footer>
-
-<script>
-async function analyze() {
-  const ticker = document.getElementById("ticker").value.trim().toUpperCase();
-  const market = document.getElementById("market").value;
-  const status = document.getElementById("status");
-  const reportSection = document.getElementById("reportSection");
-  const reportContent = document.getElementById("reportContent");
-
-  if (!ticker) {
-    status.innerText = "Please enter a valid stock ticker.";
-    return;
-  }
-
-  status.innerText = "Generating research report. This may take 30–60 seconds...";
-  reportSection.style.display = "none";
-  reportContent.innerText = "";
-
-  try {
-    const response = await fetch(
-      "https://globus37.app.n8n.cloud/webhook-test/stock-research",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ ticker, market })
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
   <title>Stock Research Assistant</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Markdown Renderer -->
-  <!--<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script> -->
-  <script src="https://cdn.jsdelivr.net/npm/marked@4.3.0/marked.min.js"></script>
-
-  <!-- Styling -->
   <style>
     body {
       font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
@@ -269,10 +23,7 @@ async function analyze() {
       box-shadow: 0 10px 25px rgba(0,0,0,0.08);
     }
 
-    h1 {
-      margin-top: 0;
-      font-size: 1.9rem;
-    }
+    h1 { font-size: 1.9rem; margin-top: 0; }
 
     .form-row {
       display: flex;
@@ -299,14 +50,9 @@ async function analyze() {
       cursor: pointer;
     }
 
-    button:hover {
-      background: #1d4ed8;
-    }
-
     #status {
       margin-top: 10px;
       font-size: 14px;
-      color: #374151;
     }
 
     #reportSection {
@@ -314,55 +60,20 @@ async function analyze() {
       margin-top: 30px;
     }
 
-    /* Report Styling */
+    /* Report formatting */
     #reportContent {
       line-height: 1.65;
       font-size: 15px;
     }
 
-    #reportContent h1 {
-      font-size: 1.8rem;
-      margin-top: 1.8em;
-    }
-
+    #reportContent h1 { font-size: 1.8rem; margin-top: 1.6em; }
     #reportContent h2 {
       font-size: 1.4rem;
-      margin-top: 1.6em;
+      margin-top: 1.4em;
       border-bottom: 1px solid #e5e7eb;
-      padding-bottom: 4px;
     }
-
-    #reportContent h3 {
-      font-size: 1.15rem;
-      margin-top: 1.3em;
-    }
-
-    #reportContent strong {
-      font-weight: 600;
-    }
-
-    #reportContent ul {
-      padding-left: 20px;
-    }
-
-    #reportContent table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 1rem 0;
-      font-size: 14px;
-    }
-
-    #reportContent th,
-    #reportContent td {
-      border: 1px solid #e5e7eb;
-      padding: 8px 10px;
-      text-align: left;
-    }
-
-    #reportContent th {
-      background: #f9fafb;
-    }
-
+    #reportContent h3 { font-size: 1.15rem; margin-top: 1.2em; }
+    #reportContent strong { font-weight: 600; }
     #reportContent hr {
       border: none;
       border-top: 1px solid #e5e7eb;
@@ -399,10 +110,23 @@ async function analyze() {
   </div>
 
   <footer>
-    AI-Generated Equity Research • For Educational Purposes Only
+    AI-Generated Equity Research • Educational Use Only
   </footer>
 
   <script>
+    // 🔹 Minimal Markdown Renderer (Safe)
+    function renderMarkdown(md) {
+      return md
+        .replace(/^### (.*$)/gim, "<h3>$1</h3>")
+        .replace(/^## (.*$)/gim, "<h2>$1</h2>")
+        .replace(/^# (.*$)/gim, "<h1>$1</h1>")
+        .replace(/\*\*(.*?)\*\*/gim, "<strong>$1</strong>")
+        .replace(/^\* (.*$)/gim, "<li>$1</li>")
+        .replace(/(<li>.*<\/li>)/gims, "<ul>$1</ul>")
+        .replace(/^---$/gim, "<hr>")
+        .replace(/\n$/gim, "<br />");
+    }
+
     async function analyze() {
       const ticker = document.getElementById("ticker").value.trim().toUpperCase();
       const market = document.getElementById("market").value;
@@ -415,7 +139,7 @@ async function analyze() {
         return;
       }
 
-      status.innerText = "Generating research report. This may take 30–60 seconds...";
+      status.innerText = "Generating research report. Please wait...";
       reportSection.style.display = "none";
       reportContent.innerHTML = "";
 
@@ -429,30 +153,20 @@ async function analyze() {
           }
         );
 
-        if (!response.ok) {
-          throw new Error("Network error");
-        }
-
         const data = await response.json();
-        console.log("API Response:", data);
+        const text = data?.[0]?.content?.parts?.[0]?.text;
 
-        const reportText =
-          data?.[0]?.content?.parts?.[0]?.text;
+        if (!text) throw new Error("No report text");
 
-        if (!reportText) {
-          throw new Error("Report text not found");
-        }
-
-        reportContent.innerHTML = window.marked.parse(reportText);
+        reportContent.innerHTML = renderMarkdown(text);
         reportSection.style.display = "block";
         status.innerText = "Analysis completed successfully.";
 
-      } catch (error) {
-        console.error(error);
-        status.innerText = "Failed to generate report. Please try again later.";
+      } catch (e) {
+        console.error(e);
+        status.innerText = "Failed to generate report.";
       }
     }
   </script>
 </body>
 </html>
-
