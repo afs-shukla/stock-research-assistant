@@ -244,9 +244,12 @@ async function analyze() {
     const data = await response.json();
     console.log("API Response after convering to json:", data);
 
-    // ✅ Extract text safely
-    const reportText =
-      data?.content?.parts?.[0]?.text;
+    if (!Array.isArray(data) || !data[0]?.content?.parts?.[0]?.text) {
+  throw new Error("Unexpected API response format");
+}
+
+const reportText = data[0]?.content?.parts?.[0]?.text;
+    //const reportText = data?.content?.parts?.[0]?.text;
 
     if (!reportText) {
       throw new Error("Report text not found in response");
