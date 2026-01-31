@@ -239,11 +239,12 @@
       }
 
       const data = await response.json();
-
+      console.log("=================");
+	  console.log(data);
       if (data.status !== "success") {
         throw new Error("Analysis failed");
       }
-
+      console.log(data.report)
       reportContent.innerText = data.report;
       reportSection.style.display = "block";
       status.innerText = "Analysis completed successfully.";
