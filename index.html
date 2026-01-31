@@ -247,7 +247,8 @@ async function analyze() {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- Markdown Renderer -->
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <!--<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script> -->
+  <script src="https://cdn.jsdelivr.net/npm/marked@4.3.0/marked.min.js"></script>
 
   <!-- Styling -->
   <style>
@@ -442,7 +443,7 @@ async function analyze() {
           throw new Error("Report text not found");
         }
 
-        reportContent.innerHTML = marked.parse(reportText);
+        reportContent.innerHTML = window.marked.parse(reportText);
         reportSection.style.display = "block";
         status.innerText = "Analysis completed successfully.";
 
@@ -455,32 +456,3 @@ async function analyze() {
 </body>
 </html>
 
-    console.log("API Response:", response);
-    const data = await response.json();
-    console.log("API Response after convering to json:", data);
-
-    if (!Array.isArray(data) || !data[0]?.content?.parts?.[0]?.text) {
-  throw new Error("Unexpected API response format");
-}
-
-const reportText = data[0]?.content?.parts?.[0]?.text;
-    //const reportText = data?.content?.parts?.[0]?.text;
-
-    if (!reportText) {
-      throw new Error("Report text not found in response");
-    }
-
-    reportContent.innerText = reportText;
-    reportSection.style.display = "block";
-    status.innerText = "Analysis completed successfully.";
-
-  } catch (error) {
-    console.error("Analysis Error:", error);
-    status.innerText = "Failed to generate report. Please try again later.";
-  }
-}
-</script>
-
-
-</body>
-</html>
