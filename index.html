@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Equity Research Assistant</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    :root {
+      --primary: #0f172a;
+      --accent: #2563eb;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #1e293b;
+      --muted: #64748b;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    header {
+      background: var(--primary);
+      color: white;
+      padding: 18px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      font-size: 18px;
+      margin: 0;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+    }
+
+    header span {
+      font-size: 13px;
+      opacity: 0.85;
+    }
+
+    main {
+      max-width: 720px;
+      margin: 60px auto;
+      padding: 0 20px;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 32px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+    }
+
+    .card h2 {
+      margin-top: 0;
+      font-size: 22px;
+      font-weight: 600;
+    }
+
+    .description {
+      color: var(--muted);
+      margin-bottom: 28px;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    label {
+      font-size: 13px;
+      font-weight: 600;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px 14px;
+      font-size: 15px;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      margin-bottom: 20px;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    button {
+      width: 100%;
+      background: var(--accent);
+      color: white;
+      padding: 14px;
+      font-size: 16px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    button:hover {
+      background: #1e40af;
+    }
+
+    .status {
+      margin-top: 18px;
+      font-size: 14px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    footer {
+      margin-top: 80px;
+      padding: 24px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    footer span {
+      display: block;
+      margin-top: 6px;
+      font-size: 12px;
+    }
+
+    @media (max-width: 600px) {
+      main {
+        margin-top: 40px;
+      }
+      .card {
+        padding: 24px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>Equity Research Assistant</h1>
+  <span>Long-term Investment Analysis</span>
+</header>
+
+<main>
+  <div class="card">
+    <h2>Analyze a Stock</h2>
+    <p class="description">
+      Generate a comprehensive equity research report including business quality,
+      valuation scenarios, and reverse DCF analysis.
+    </p>
+
+    <label for="ticker">Stock / Company Ticker</label>
+    <input id="ticker" placeholder="INFY, TCS, AAPL">
+
+    <label for="market">Market</label>
+    <select id="market">
+      <option value="INDIA">India</option>
+      <option value="US">United States</option>
+    </select>
+
+    <button onclick="analyze()">Generate Research Report</button>
+
+    <div class="status" id="status"></div>
+  </div>
+</main>
+
+<footer>
+  Built for long-term investors
+  <span>Not investment advice • For educational use</span>
+</footer>
+
+<script>
+  async function analyze() {
+    const ticker = document.getElementById("ticker").value.trim().toUpperCase();
+    const market = document.getElementById("market").value;
+    const status = document.getElementById("status");
+
+    if (!ticker) {
+      status.innerText = "Please enter a valid stock ticker.";
+      return;
+    }
+
+    status.innerText = "Analyzing company fundamentals. This may take 30–60 seconds…";
+
+    try {
+      const response = await fetch("https://globus37.app.n8n.cloud/webhook-test/stock-research", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ ticker, market })
+      });
+
+      const data = await response.json();
+
+      status.innerText = "Analysis completed successfully. Check console output.";
+      console.log("Research Report:", data);
+
+    } catch (error) {
+      status.innerText = "Something went wrong. Please try again later.";
+      console.error(error);
+    }
+  }
+</script>
+
+</body>
+</html>
