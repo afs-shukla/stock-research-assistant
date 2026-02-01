@@ -2,129 +2,476 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Stock Research Assistant</title>
+  <title>Stock Research Assistant - Professional Equity Analysis</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-      background: #f3f4f6;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       margin: 0;
       padding: 20px;
-      color: #111827;
+      color: #1f2937;
+      min-height: 100vh;
     }
 
     .container {
-      max-width: 1100px;
+      max-width: 1200px;
       margin: auto;
       background: #ffffff;
-      padding: 24px 28px;
-      border-radius: 10px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
     }
 
-    h1 { font-size: 1.9rem; margin-top: 0; }
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+      border-bottom: 2px solid #e5e7eb;
+      padding-bottom: 24px;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin: 0 0 8px 0;
+      color: #111827;
+      font-weight: 700;
+    }
+
+    .subtitle {
+      color: #6b7280;
+      font-size: 1rem;
+      margin: 0;
+    }
+
+    .search-section {
+      background: #f9fafb;
+      padding: 28px;
+      border-radius: 12px;
+      margin-bottom: 32px;
+      border: 1px solid #e5e7eb;
+    }
 
     .form-row {
-      display: flex;
-      gap: 12px;
+      display: grid;
+      grid-template-columns: 2fr 1fr auto;
+      gap: 16px;
       margin-bottom: 16px;
     }
 
-    input, select, button {
-      padding: 10px 12px;
-      font-size: 14px;
+    @media (max-width: 768px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
     }
 
     input, select {
-      flex: 1;
-      border: 1px solid #d1d5db;
-      border-radius: 6px;
+      padding: 14px 16px;
+      font-size: 15px;
+      border: 2px solid #d1d5db;
+      border-radius: 8px;
+      transition: all 0.2s;
+      background: white;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
     }
 
     button {
-      background: #2563eb;
+      padding: 14px 32px;
+      font-size: 15px;
+      font-weight: 600;
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
       color: white;
       border: none;
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    button:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .status-container {
+      min-height: 28px;
+      margin-top: 12px;
     }
 
     #status {
-      margin-top: 10px;
       font-size: 14px;
+      padding: 10px 16px;
+      border-radius: 6px;
+      display: inline-block;
+    }
+
+    #status.loading {
+      background: #dbeafe;
+      color: #1e40af;
+      border-left: 4px solid #2563eb;
+    }
+
+    #status.success {
+      background: #d1fae5;
+      color: #065f46;
+      border-left: 4px solid #10b981;
+    }
+
+    #status.error {
+      background: #fee2e2;
+      color: #991b1b;
+      border-left: 4px solid #ef4444;
+    }
+
+    .loader {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid #2563eb;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
 
     #reportSection {
       display: none;
-      margin-top: 30px;
+      animation: fadeIn 0.5s ease-in;
     }
 
-    /* Report formatting */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .report-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 24px 28px;
+      border-radius: 12px 12px 0 0;
+      margin: -8px -8px 0 -8px;
+    }
+
+    .report-header h2 {
+      margin: 0 0 8px 0;
+      font-size: 1.75rem;
+    }
+
+    .report-header .meta {
+      opacity: 0.95;
+      font-size: 14px;
+    }
+
     #reportContent {
-      line-height: 1.65;
-      font-size: 15px;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 0 0 12px 12px;
+      padding: 36px;
+      line-height: 1.75;
+      font-size: 15.5px;
+      color: #374151;
     }
 
-    #reportContent h1 { font-size: 1.8rem; margin-top: 1.6em; }
-    #reportContent h2 {
-      font-size: 1.4rem;
-      margin-top: 1.4em;
-      border-bottom: 1px solid #e5e7eb;
+    /* Enhanced Markdown Styles */
+    #reportContent h1 {
+      font-size: 2rem;
+      margin-top: 2em;
+      margin-bottom: 0.75em;
+      color: #111827;
+      font-weight: 700;
+      padding-bottom: 0.3em;
+      border-bottom: 3px solid #2563eb;
     }
-    #reportContent h3 { font-size: 1.15rem; margin-top: 1.2em; }
-    #reportContent strong { font-weight: 600; }
+
+    #reportContent h1:first-child {
+      margin-top: 0;
+    }
+
+    #reportContent h2 {
+      font-size: 1.5rem;
+      margin-top: 1.8em;
+      margin-bottom: 0.6em;
+      color: #1f2937;
+      font-weight: 600;
+      padding-bottom: 0.25em;
+      border-bottom: 2px solid #e5e7eb;
+    }
+
+    #reportContent h3 {
+      font-size: 1.25rem;
+      margin-top: 1.5em;
+      margin-bottom: 0.5em;
+      color: #374151;
+      font-weight: 600;
+    }
+
+    #reportContent h4 {
+      font-size: 1.1rem;
+      margin-top: 1.2em;
+      margin-bottom: 0.4em;
+      color: #4b5563;
+      font-weight: 600;
+    }
+
+    #reportContent p {
+      margin-bottom: 1.2em;
+      text-align: justify;
+    }
+
+    #reportContent strong {
+      font-weight: 600;
+      color: #1f2937;
+    }
+
+    #reportContent em {
+      font-style: italic;
+      color: #4b5563;
+    }
+
+    #reportContent ul, #reportContent ol {
+      margin: 1.2em 0;
+      padding-left: 2em;
+    }
+
+    #reportContent li {
+      margin-bottom: 0.6em;
+      line-height: 1.7;
+    }
+
+    #reportContent ul li::marker {
+      color: #2563eb;
+    }
+
     #reportContent hr {
       border: none;
-      border-top: 1px solid #e5e7eb;
-      margin: 2rem 0;
+      border-top: 2px solid #e5e7eb;
+      margin: 2.5rem 0;
+    }
+
+    #reportContent blockquote {
+      border-left: 4px solid #2563eb;
+      padding-left: 1.5em;
+      margin: 1.5em 0;
+      color: #4b5563;
+      font-style: italic;
+      background: #f9fafb;
+      padding: 1em 1.5em;
+      border-radius: 0 8px 8px 0;
+    }
+
+    #reportContent code {
+      background: #f3f4f6;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9em;
+      color: #dc2626;
+    }
+
+    #reportContent table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5em 0;
+      border: 1px solid #e5e7eb;
+    }
+
+    #reportContent th {
+      background: #f3f4f6;
+      padding: 12px;
+      text-align: left;
+      font-weight: 600;
+      border: 1px solid #e5e7eb;
+    }
+
+    #reportContent td {
+      padding: 12px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .recommendation-badge {
+      display: inline-block;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 14px;
+      margin-left: 12px;
+    }
+
+    .recommendation-badge.buy {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .recommendation-badge.hold {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .recommendation-badge.sell {
+      background: #fee2e2;
+      color: #991b1b;
     }
 
     footer {
-      margin-top: 30px;
+      margin-top: 48px;
       text-align: center;
-      font-size: 12px;
+      font-size: 13px;
       color: #6b7280;
+      padding-top: 24px;
+      border-top: 1px solid #e5e7eb;
+    }
+
+    footer a {
+      color: #2563eb;
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    .disclaimer {
+      background: #fef3c7;
+      border: 1px solid #fbbf24;
+      border-radius: 8px;
+      padding: 16px;
+      margin-top: 24px;
+      font-size: 13px;
+      color: #78350f;
+    }
+
+    .disclaimer strong {
+      color: #92400e;
     }
   </style>
 </head>
 
 <body>
   <div class="container">
-    <h1>📊 Stock Research Assistant</h1>
+    <header>
+      <h1>📊 Stock Research Assistant</h1>
+      <p class="subtitle">AI-Powered Professional Equity Research & Analysis</p>
+    </header>
 
-    <div class="form-row">
-      <input id="ticker" placeholder="Enter Stock Ticker (e.g. TCS)" />
-      <select id="market">
-        <option value="NSE">NSE</option>
-        <option value="BSE">BSE</option>
-      </select>
-      <button onclick="analyze()">Analyze</button>
+    <div class="search-section">
+      <div class="form-row">
+        <input 
+          id="ticker" 
+          placeholder="Enter Stock Ticker (e.g., TCS, RELIANCE, INFY)" 
+          onkeypress="handleKeyPress(event)"
+        />
+        <select id="market">
+          <option value="NSE">NSE (National Stock Exchange)</option>
+          <option value="BSE">BSE (Bombay Stock Exchange)</option>
+        </select>
+        <button onclick="analyze()" id="analyzeBtn">
+          Analyze Stock
+        </button>
+      </div>
+      <div class="status-container">
+        <div id="status"></div>
+      </div>
     </div>
 
-    <div id="status"></div>
-
     <div id="reportSection">
+      <div class="report-header">
+        <h2 id="reportTitle">Research Report</h2>
+        <div class="meta">
+          <span id="reportMeta"></span>
+        </div>
+      </div>
       <div id="reportContent"></div>
+      
+      <div class="disclaimer">
+        <strong>⚠️ Disclaimer:</strong> This analysis is generated by AI and is for educational and informational purposes only. It should not be considered as financial advice. Always conduct your own research and consult with a qualified financial advisor before making investment decisions.
+      </div>
     </div>
   </div>
 
   <footer>
-    AI-Generated Equity Research • Educational Use Only
+    <p>
+      <strong>Stock Research Assistant</strong> | AI-Generated Equity Research<br>
+      Powered by Advanced AI Technology • Not Financial Advice
+    </p>
   </footer>
 
   <script>
-    // 🔹 Minimal Markdown Renderer (Safe)
+    // Enhanced Markdown Renderer with better formatting
     function renderMarkdown(md) {
-      return md
-        .replace(/^### (.*$)/gim, "<h3>$1</h3>")
-        .replace(/^## (.*$)/gim, "<h2>$1</h2>")
-        .replace(/^# (.*$)/gim, "<h1>$1</h1>")
-        .replace(/\*\*(.*?)\*\*/gim, "<strong>$1</strong>")
-        .replace(/^\* (.*$)/gim, "<li>$1</li>")
-        .replace(/(<li>.*<\/li>)/gims, "<ul>$1</ul>")
-        .replace(/^---$/gim, "<hr>")
-        .replace(/\n$/gim, "<br />");
+      let html = md;
+
+      // Headers (must be done in order from h4 to h1)
+      html = html.replace(/^#### (.*$)/gim, '<h4>$1</h4>');
+      html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+      html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+      html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+
+      // Bold and italic
+      html = html.replace(/\*\*\*(.*?)\*\*\*/gim, '<strong><em>$1</em></strong>');
+      html = html.replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>');
+      html = html.replace(/\*(.*?)\*/gim, '<em>$1</em>');
+
+      // Inline code
+      html = html.replace(/`(.*?)`/gim, '<code>$1</code>');
+
+      // Blockquotes
+      html = html.replace(/^> (.*$)/gim, '<blockquote>$1</blockquote>');
+
+      // Horizontal rules
+      html = html.replace(/^---$/gim, '<hr>');
+      html = html.replace(/^\*\*\*$/gim, '<hr>');
+
+      // Lists - unordered
+      html = html.replace(/^\* (.*$)/gim, '<li>$1</li>');
+      html = html.replace(/^- (.*$)/gim, '<li>$1</li>');
+      
+      // Lists - ordered
+      html = html.replace(/^\d+\. (.*$)/gim, '<li>$1</li>');
+
+      // Wrap consecutive <li> tags in <ul>
+      html = html.replace(/(<li>.*<\/li>\n?)+/gims, function(match) {
+        return '<ul>' + match + '</ul>';
+      });
+
+      // Paragraphs (line breaks to <br>, double line breaks to <p>)
+      html = html.split('\n\n').map(para => {
+        // Skip if already wrapped in tags
+        if (para.match(/^<[h|u|o|b|d]/)) return para;
+        return '<p>' + para.replace(/\n/g, '<br>') + '</p>';
+      }).join('\n');
+
+      return html;
+    }
+
+    function handleKeyPress(event) {
+      if (event.key === 'Enter') {
+        analyze();
+      }
     }
 
     async function analyze() {
@@ -133,15 +480,23 @@
       const status = document.getElementById("status");
       const reportSection = document.getElementById("reportSection");
       const reportContent = document.getElementById("reportContent");
+      const reportTitle = document.getElementById("reportTitle");
+      const reportMeta = document.getElementById("reportMeta");
+      const analyzeBtn = document.getElementById("analyzeBtn");
 
       if (!ticker) {
-        status.innerText = "Please enter a valid stock ticker.";
+        status.className = "error";
+        status.innerHTML = "❌ Please enter a valid stock ticker.";
         return;
       }
 
-      status.innerText = "Generating research report. Please wait...";
+      // Update UI for loading state
+      status.className = "loading";
+      status.innerHTML = '<span class="loader"></span>Generating comprehensive research report for ' + ticker + '...';
       reportSection.style.display = "none";
       reportContent.innerHTML = "";
+      analyzeBtn.disabled = true;
+      analyzeBtn.textContent = "Analyzing...";
 
       try {
         const response = await fetch(
@@ -153,18 +508,47 @@
           }
         );
 
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+
         const data = await response.json();
         const text = data?.[0]?.content?.parts?.[0]?.text;
 
-        if (!text) throw new Error("No report text");
+        if (!text) {
+          throw new Error("No report text received from API");
+        }
 
+        // Extract recommendation if present
+        const recommendationMatch = text.match(/Recommendation:\s*(\w+)/i);
+        let recommendationBadge = "";
+        if (recommendationMatch) {
+          const rec = recommendationMatch[1].toUpperCase();
+          const badgeClass = rec === "BUY" ? "buy" : rec === "SELL" ? "sell" : "hold";
+          recommendationBadge = `<span class="recommendation-badge ${badgeClass}">${rec}</span>`;
+        }
+
+        // Render the report
         reportContent.innerHTML = renderMarkdown(text);
+        reportTitle.innerHTML = `Research Report: ${ticker}.${market}` + recommendationBadge;
+        reportMeta.textContent = `Generated on ${new Date().toLocaleString()} • Market: ${market}`;
         reportSection.style.display = "block";
-        status.innerText = "Analysis completed successfully.";
+        
+        status.className = "success";
+        status.innerHTML = "✅ Analysis completed successfully!";
+
+        // Scroll to report
+        setTimeout(() => {
+          reportSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
 
       } catch (e) {
-        console.error(e);
-        status.innerText = "Failed to generate report.";
+        console.error("Error:", e);
+        status.className = "error";
+        status.innerHTML = "❌ Failed to generate report. Please try again or check your connection.";
+      } finally {
+        analyzeBtn.disabled = false;
+        analyzeBtn.textContent = "Analyze Stock";
       }
     }
   </script>
